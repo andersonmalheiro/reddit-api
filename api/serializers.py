@@ -9,9 +9,10 @@ class SubredditSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    subreddit_name = serializers.SlugRelatedField(source='subreddit', read_only=True, slug_field='name')
     class Meta:
         model = Post
-        fields = ['id', 'title', 'description', 'subreddit',
+        fields = ['id', 'title', 'description', 'subreddit','subreddit_name',
                   'author', 'likes', 'dislikes', 'createdAt']
 
 
