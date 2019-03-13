@@ -50,3 +50,31 @@ class SubredditDetail(APIView):
         subreddit = self.get_object(id)
         subreddit.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PostList(APIView):
+    # Posts de um subreddit
+    def get(self, request, id):
+        posts = Post.objects.filter(subreddit=id)
+        if 'order_by' in request.query_params:
+            posts = posts.order_by(request.query_params['order_by'])
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, id):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PostAll(APIView):
+    # Todos os posts
+    def get(self, request):
+        posts = Post.objects.all()
+        if 'order_by' in request.query_params:
+            posts = posts.order_by(request.query_params['order_by'])
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
