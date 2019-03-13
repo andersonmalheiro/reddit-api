@@ -118,3 +118,69 @@ class PostDetail(APIView):
         post = self.get_object(id)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CommentsByPost(APIView):
+    def get(self, request, id):
+        comments = Comment.objects.filter(post=id)
+        
+        if 'order_by' in request.query_params:
+            comments = comments.order_by(request.query_params['order_by'])
+
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+
+class CommentList(APIView):
+    def get(self, request):
+        comments = Comment.objects.all()
+
+        if 'order_by' in request.query_params:
+            comments = comments.order_by(request.query_params['order_by'])
+
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """
+        {
+            "text": "teste de comentário",
+            "author": "John",
+            "post": 2,
+        }
+        """
+        serializer = CommentSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentDetail(APIView):
+    def get_object(self, id):
+        try:
+            return Comment.objects.get(pk=id)
+        except Comment.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id):
+        comment = self.get_object(id)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        comment = self.get_object(id)
+        serializer = CommentSerializer(comment, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        comment = self.get_object(id)
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

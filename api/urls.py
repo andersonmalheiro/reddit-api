@@ -8,6 +8,9 @@ urlpatterns = [
     path('subreddits/<int:id>/posts/', PostsBySubreddit.as_view()),
     path('posts/', PostList.as_view()),
     path('posts/<int:id>/', PostDetail.as_view()),
+    path('posts/<int:id>/comments/', CommentsByPost.as_view()),
+    path('comments/', CommentList.as_view()),
+    path('comments/<int:id>/', CommentDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
