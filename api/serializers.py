@@ -13,7 +13,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'description', 'subreddit','subreddit_name',
-                  'author', 'likes', 'dislikes', 'createdAt']
+                  'author','image', 'likes', 'dislikes', 'createdAt']
 
 
 class CommentSerializer(serializers.ModelSerializer):

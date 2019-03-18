@@ -21,6 +21,7 @@ class Post(models.Model):
         Subreddit, on_delete=models.CASCADE, related_name='Subreddit')
     author = models.CharField('Author', max_length=50,
                               blank=False, null=False)
+    image = models.CharField('Image URL', max_length=2000, blank=True, null=True, default='')
     likes = models.PositiveIntegerField('Likes', default=0)
     dislikes = models.PositiveIntegerField('Dislikes', default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
